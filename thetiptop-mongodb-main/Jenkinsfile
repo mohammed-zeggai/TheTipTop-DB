@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+        //stage('stop old container') {
+        //    steps {
+        //        sh 'docker rm -f mongodb'
+        //    }
+        //}
+
+        stage('tag mongodb image') {
+            steps {
+                sh 'docker tag mongodb/mongodb-community-server:latest groupe7archiweb/mongodb/mongodb-community-server'
+            }
+        }
+
+        stage('reinit mongodb container') {
+            steps {
+                sh 'docker run --rm --name mongodb -d --network thetiptop-network -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=password -p 27017:27017 -v /data/db:/data/db --user root mongodb/mongodb-community-server --bind_ip_all'
+            }
+        }
+    }
+}
